@@ -8,6 +8,10 @@
 
 import Foundation
 
+/**
+*This class is responisble for holding and generating levels
+**/
+
 class Level{
     var blocks:[[Int]] = []
     var width:Int = 0
@@ -20,15 +24,16 @@ class Level{
     }
     
     func buildLevel() -> Int{
-        //these values are for testing right now
+        //these values are for testing right now and will be parameterized later
         let startX = 0
         let startY = 0;
         let endX = 7;
         let endY = 4;
         let maxTries = 100000;
         var tries = maxTries;
-        while canReach(startX: startX, startY: startY, endX: endX, endY: endY) < 14 {
+        while canReach(startX: startX, startY: startY, endX: endX, endY: endY) < 7 {
             toggleBlock(x: Int(arc4random_uniform(UInt32(width))), y: Int(arc4random_uniform(UInt32(height))))
+            blocks[endX][endY] = 2
             tries = tries - 1;
             if tries < 0{
                 return -1
@@ -36,6 +41,7 @@ class Level{
         }
         //this might be a little ugly
         blocks[startX][startY] = 0
+        print("Found in \(maxTries-tries) tries")
         return canReach(startX: startX, startY: startY, endX: endX, endY: endY)
     }
     
@@ -51,6 +57,72 @@ class Level{
             }
             print("")
         }
+    }
+    
+    func getNeighbors(x:Int,y:Int) -> [(x:Int,y:Int)] {
+        //get neighboring blocks
+        var neighbors:[(x:Int,y:Int)] = []
+        //right
+        var xx = x;
+        var yy = y;
+        while xx + 1 < width{
+            if blocks[xx + 1][yy] == 1{
+                if blocks[xx][yy] == 0{
+                    neighbors.append((xx,yy))
+                }
+                break
+            } else if blocks[xx + 1][yy] == 2{
+                neighbors.append((xx + 1,yy))
+            }
+            xx += 1
+        }
+        //left
+        xx = x
+        yy = y
+        while xx - 1 > 0{
+            if blocks[xx - 1][yy] == 1{
+                if blocks[xx][yy] == 0{
+                    neighbors.append((xx,yy))
+                }
+                else if blocks[xx + 1][yy] == 2{
+                    neighbors.append((xx + 1,yy))
+                }
+                break
+            }
+            xx -= 1
+        }
+        //up
+        xx = x
+        yy = y
+        while yy - 1 > 0{
+            if blocks[xx][yy - 1] == 1{
+                if blocks[xx][yy] == 0{
+                    neighbors.append((xx,yy))
+                }
+                else if blocks[xx + 1][yy] == 2{
+                    neighbors.append((xx + 1,yy))
+                }
+                break
+            }
+            yy -= 1
+        }
+        //down
+        xx = x
+        yy = y
+        while yy + 1 < height{
+            //print(xx,yy + 1)
+            if blocks[xx][yy + 1] == 1{
+                if blocks[xx][yy] == 0{
+                    neighbors.append((xx,yy))
+                }
+                else if blocks[xx + 1][yy] == 2{
+                    neighbors.append((xx + 1,yy))
+                }
+                break
+            }
+            yy += 1
+        }
+        return neighbors
     }
     
     func canReach(startX:Int,startY:Int,endX:Int,endY:Int) -> Int{
@@ -70,58 +142,9 @@ class Level{
             } else {
                 states[state.0][state.1] = state.2
                 //check for neighboring blocks
-                //right
-                var xx = state.0;
-                var yy = state.1;
-                while xx + 1 < width{
-                    if blocks[xx + 1][yy] == 1{
-                        if blocks[xx][yy] == 0{
-                            //states[xx][yy] = state.2
-                            queue.append((xx,yy,state.2 + 1))
-                        }
-                        break
-                    }
-                    xx += 1
-                }
-                //left
-                xx = state.0
-                yy = state.1
-                while xx - 1 > 0{
-                    if blocks[xx - 1][yy] == 1{
-                        if blocks[xx][yy] == 0{
-                            //states[xx][yy] = state.2
-                            queue.append((xx,yy,state.2 + 1))
-                        }
-                        break
-                    }
-                    xx -= 1
-                }
-                //up
-                xx = state.0
-                yy = state.1
-                while yy - 1 > 0{
-                    if blocks[xx][yy - 1] == 1{
-                        if blocks[xx][yy] == 0{
-                            //states[xx][yy] = state.2
-                            queue.append((xx,yy,state.2 + 1))
-                        }
-                        break
-                    }
-                    yy -= 1
-                }
-                //down
-                xx = state.0
-                yy = state.1
-                while yy + 1 < height{
-                    //print(xx,yy + 1)
-                    if blocks[xx][yy + 1] == 1{
-                        if blocks[xx][yy] == 0{
-                            //states[xx][yy] = state.2
-                            queue.append((xx,yy,state.2 + 1))
-                        }
-                        break
-                    }
-                    yy += 1
+                let neighbors = getNeighbors(x: state.0, y: state.1).filter({states[$0.x][$0.y] < 0}).map({($0.x,$0.y,state.2+1)})
+                for neighbor in neighbors{
+                    queue.append(neighbor)
                 }
             }
         }
