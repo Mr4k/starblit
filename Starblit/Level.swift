@@ -34,6 +34,7 @@ class Level{
         while canReach(startX: startX, startY: startY, endX: endX, endY: endY) < 7 {
             toggleBlock(x: Int(arc4random_uniform(UInt32(width))), y: Int(arc4random_uniform(UInt32(height))))
             blocks[endX][endY] = 2
+            blocks[startX][startY] = 0
             tries = tries - 1;
             if tries < 0{
                 return -1
@@ -61,32 +62,33 @@ class Level{
     
     func getNeighbors(x:Int,y:Int) -> [(x:Int,y:Int)] {
         //get neighboring blocks
-        var neighbors:[(x:Int,y:Int)] = []
+        var neighbors:[(x:Int,y:Int)] = [(width,y),(-1,y),(x,-1),(x,height)]
         //right
         var xx = x;
         var yy = y;
         while xx + 1 < width{
             if blocks[xx + 1][yy] == 1{
                 if blocks[xx][yy] == 0{
-                    neighbors.append((xx,yy))
+                    neighbors[0] = (xx,yy)
                 }
                 break
             } else if blocks[xx + 1][yy] == 2{
-                neighbors.append((xx + 1,yy))
+                neighbors[0] = (xx + 1,yy)
             }
             xx += 1
         }
         //left
         xx = x
         yy = y
-        while xx - 1 > 0{
+        while xx - 1 > -1{
             if blocks[xx - 1][yy] == 1{
                 if blocks[xx][yy] == 0{
-                    neighbors.append((xx,yy))
+                    neighbors[1] = ((xx,yy))
                 }
-                else if blocks[xx + 1][yy] == 2{
-                    neighbors.append((xx + 1,yy))
-                }
+                break
+            }
+            else if blocks[xx - 1][yy] == 2{
+                neighbors[1] = (xx - 1,yy)
                 break
             }
             xx -= 1
@@ -94,14 +96,14 @@ class Level{
         //up
         xx = x
         yy = y
-        while yy - 1 > 0{
+        while yy - 1 > -1{
             if blocks[xx][yy - 1] == 1{
                 if blocks[xx][yy] == 0{
-                    neighbors.append((xx,yy))
+                    neighbors[2] = ((xx,yy))
                 }
-                else if blocks[xx + 1][yy] == 2{
-                    neighbors.append((xx + 1,yy))
-                }
+                break
+            } else if blocks[xx][yy - 1] == 2{
+                neighbors[2] = (xx,yy - 1)
                 break
             }
             yy -= 1
@@ -113,11 +115,12 @@ class Level{
             //print(xx,yy + 1)
             if blocks[xx][yy + 1] == 1{
                 if blocks[xx][yy] == 0{
-                    neighbors.append((xx,yy))
+                    neighbors[3] = (xx,yy)
                 }
-                else if blocks[xx + 1][yy] == 2{
-                    neighbors.append((xx + 1,yy))
-                }
+                break
+            }
+            else if blocks[xx][yy + 1] == 2{
+                neighbors[3] = (xx,yy + 1)
                 break
             }
             yy += 1
@@ -142,7 +145,7 @@ class Level{
             } else {
                 states[state.0][state.1] = state.2
                 //check for neighboring blocks
-                let neighbors = getNeighbors(x: state.0, y: state.1).filter({states[$0.x][$0.y] < 0}).map({($0.x,$0.y,state.2+1)})
+                let neighbors = getNeighbors(x: state.0, y: state.1).filter({$0.x < width && $0.x > -1 && $0.y > -1 && $0.y < height && states[$0.x][$0.y] < 0}).map({($0.x,$0.y,state.2+1)})
                 for neighbor in neighbors{
                     queue.append(neighbor)
                 }
