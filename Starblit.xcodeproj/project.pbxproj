@@ -1,0 +1,536 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BD87CFC91DAA631600939B1E /* Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD87CFC81DAA631600939B1E /* Level.swift */; };
+		BDAB8EE71DA931B100B8FF16 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDAB8EE61DA931B100B8FF16 /* AppDelegate.swift */; };
+		BDAB8EE91DA931B100B8FF16 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = BDAB8EE81DA931B100B8FF16 /* GameScene.sks */; };
+		BDAB8EEB1DA931B100B8FF16 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDAB8EEA1DA931B100B8FF16 /* GameScene.swift */; };
+		BDAB8EED1DA931B100B8FF16 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDAB8EEC1DA931B100B8FF16 /* GameViewController.swift */; };
+		BDAB8EF01DA931B100B8FF16 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BDAB8EEE1DA931B100B8FF16 /* Main.storyboard */; };
+		BDAB8EF21DA931B100B8FF16 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BDAB8EF11DA931B100B8FF16 /* Assets.xcassets */; };
+		BDAB8EF51DA931B100B8FF16 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BDAB8EF31DA931B100B8FF16 /* LaunchScreen.storyboard */; };
+		BDAB8F001DA931B100B8FF16 /* StarblitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDAB8EFF1DA931B100B8FF16 /* StarblitTests.swift */; };
+		BDAB8F0B1DA931B200B8FF16 /* StarblitUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDAB8F0A1DA931B200B8FF16 /* StarblitUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BDAB8EFC1DA931B100B8FF16 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BDAB8EDB1DA931B100B8FF16 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BDAB8EE21DA931B100B8FF16;
+			remoteInfo = Starblit;
+		};
+		BDAB8F071DA931B200B8FF16 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BDAB8EDB1DA931B100B8FF16 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BDAB8EE21DA931B100B8FF16;
+			remoteInfo = Starblit;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		BD87CFC81DAA631600939B1E /* Level.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Level.swift; sourceTree = "<group>"; };
+		BDAB8EE31DA931B100B8FF16 /* Starblit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Starblit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BDAB8EE61DA931B100B8FF16 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		BDAB8EE81DA931B100B8FF16 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
+		BDAB8EEA1DA931B100B8FF16 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
+		BDAB8EEC1DA931B100B8FF16 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		BDAB8EEF1DA931B100B8FF16 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		BDAB8EF11DA931B100B8FF16 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		BDAB8EF41DA931B100B8FF16 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		BDAB8EF61DA931B100B8FF16 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BDAB8EFB1DA931B100B8FF16 /* StarblitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StarblitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BDAB8EFF1DA931B100B8FF16 /* StarblitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarblitTests.swift; sourceTree = "<group>"; };
+		BDAB8F011DA931B100B8FF16 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BDAB8F061DA931B200B8FF16 /* StarblitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StarblitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BDAB8F0A1DA931B200B8FF16 /* StarblitUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarblitUITests.swift; sourceTree = "<group>"; };
+		BDAB8F0C1DA931B200B8FF16 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BDAB8EE01DA931B100B8FF16 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BDAB8EF81DA931B100B8FF16 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BDAB8F031DA931B200B8FF16 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BDAB8EDA1DA931B100B8FF16 = {
+			isa = PBXGroup;
+			children = (
+				BDAB8EE51DA931B100B8FF16 /* Starblit */,
+				BDAB8EFE1DA931B100B8FF16 /* StarblitTests */,
+				BDAB8F091DA931B200B8FF16 /* StarblitUITests */,
+				BDAB8EE41DA931B100B8FF16 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BDAB8EE41DA931B100B8FF16 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BDAB8EE31DA931B100B8FF16 /* Starblit.app */,
+				BDAB8EFB1DA931B100B8FF16 /* StarblitTests.xctest */,
+				BDAB8F061DA931B200B8FF16 /* StarblitUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BDAB8EE51DA931B100B8FF16 /* Starblit */ = {
+			isa = PBXGroup;
+			children = (
+				BDAB8EE61DA931B100B8FF16 /* AppDelegate.swift */,
+				BDAB8EE81DA931B100B8FF16 /* GameScene.sks */,
+				BDAB8EEA1DA931B100B8FF16 /* GameScene.swift */,
+				BDAB8EEC1DA931B100B8FF16 /* GameViewController.swift */,
+				BDAB8EEE1DA931B100B8FF16 /* Main.storyboard */,
+				BDAB8EF11DA931B100B8FF16 /* Assets.xcassets */,
+				BDAB8EF31DA931B100B8FF16 /* LaunchScreen.storyboard */,
+				BDAB8EF61DA931B100B8FF16 /* Info.plist */,
+				BD87CFC81DAA631600939B1E /* Level.swift */,
+			);
+			path = Starblit;
+			sourceTree = "<group>";
+		};
+		BDAB8EFE1DA931B100B8FF16 /* StarblitTests */ = {
+			isa = PBXGroup;
+			children = (
+				BDAB8EFF1DA931B100B8FF16 /* StarblitTests.swift */,
+				BDAB8F011DA931B100B8FF16 /* Info.plist */,
+			);
+			path = StarblitTests;
+			sourceTree = "<group>";
+		};
+		BDAB8F091DA931B200B8FF16 /* StarblitUITests */ = {
+			isa = PBXGroup;
+			children = (
+				BDAB8F0A1DA931B200B8FF16 /* StarblitUITests.swift */,
+				BDAB8F0C1DA931B200B8FF16 /* Info.plist */,
+			);
+			path = StarblitUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BDAB8EE21DA931B100B8FF16 /* Starblit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BDAB8F0F1DA931B200B8FF16 /* Build configuration list for PBXNativeTarget "Starblit" */;
+			buildPhases = (
+				BDAB8EDF1DA931B100B8FF16 /* Sources */,
+				BDAB8EE01DA931B100B8FF16 /* Frameworks */,
+				BDAB8EE11DA931B100B8FF16 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Starblit;
+			productName = Starblit;
+			productReference = BDAB8EE31DA931B100B8FF16 /* Starblit.app */;
+			productType = "com.apple.product-type.application";
+		};
+		BDAB8EFA1DA931B100B8FF16 /* StarblitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BDAB8F121DA931B200B8FF16 /* Build configuration list for PBXNativeTarget "StarblitTests" */;
+			buildPhases = (
+				BDAB8EF71DA931B100B8FF16 /* Sources */,
+				BDAB8EF81DA931B100B8FF16 /* Frameworks */,
+				BDAB8EF91DA931B100B8FF16 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BDAB8EFD1DA931B100B8FF16 /* PBXTargetDependency */,
+			);
+			name = StarblitTests;
+			productName = StarblitTests;
+			productReference = BDAB8EFB1DA931B100B8FF16 /* StarblitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		BDAB8F051DA931B200B8FF16 /* StarblitUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BDAB8F151DA931B200B8FF16 /* Build configuration list for PBXNativeTarget "StarblitUITests" */;
+			buildPhases = (
+				BDAB8F021DA931B200B8FF16 /* Sources */,
+				BDAB8F031DA931B200B8FF16 /* Frameworks */,
+				BDAB8F041DA931B200B8FF16 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BDAB8F081DA931B200B8FF16 /* PBXTargetDependency */,
+			);
+			name = StarblitUITests;
+			productName = StarblitUITests;
+			productReference = BDAB8F061DA931B200B8FF16 /* StarblitUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BDAB8EDB1DA931B100B8FF16 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0720;
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "Peter Stefek";
+				TargetAttributes = {
+					BDAB8EE21DA931B100B8FF16 = {
+						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 9FQKKXXGGY;
+						LastSwiftMigration = 0800;
+					};
+					BDAB8EFA1DA931B100B8FF16 = {
+						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 9FQKKXXGGY;
+						LastSwiftMigration = 0800;
+						TestTargetID = BDAB8EE21DA931B100B8FF16;
+					};
+					BDAB8F051DA931B200B8FF16 = {
+						CreatedOnToolsVersion = 7.2;
+						DevelopmentTeam = 9FQKKXXGGY;
+						LastSwiftMigration = 0800;
+						TestTargetID = BDAB8EE21DA931B100B8FF16;
+					};
+				};
+			};
+			buildConfigurationList = BDAB8EDE1DA931B100B8FF16 /* Build configuration list for PBXProject "Starblit" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BDAB8EDA1DA931B100B8FF16;
+			productRefGroup = BDAB8EE41DA931B100B8FF16 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BDAB8EE21DA931B100B8FF16 /* Starblit */,
+				BDAB8EFA1DA931B100B8FF16 /* StarblitTests */,
+				BDAB8F051DA931B200B8FF16 /* StarblitUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BDAB8EE11DA931B100B8FF16 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BDAB8EE91DA931B100B8FF16 /* GameScene.sks in Resources */,
+				BDAB8EF51DA931B100B8FF16 /* LaunchScreen.storyboard in Resources */,
+				BDAB8EF21DA931B100B8FF16 /* Assets.xcassets in Resources */,
+				BDAB8EF01DA931B100B8FF16 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BDAB8EF91DA931B100B8FF16 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BDAB8F041DA931B200B8FF16 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BDAB8EDF1DA931B100B8FF16 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BDAB8EEB1DA931B100B8FF16 /* GameScene.swift in Sources */,
+				BDAB8EED1DA931B100B8FF16 /* GameViewController.swift in Sources */,
+				BD87CFC91DAA631600939B1E /* Level.swift in Sources */,
+				BDAB8EE71DA931B100B8FF16 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BDAB8EF71DA931B100B8FF16 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BDAB8F001DA931B100B8FF16 /* StarblitTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BDAB8F021DA931B200B8FF16 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BDAB8F0B1DA931B200B8FF16 /* StarblitUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BDAB8EFD1DA931B100B8FF16 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BDAB8EE21DA931B100B8FF16 /* Starblit */;
+			targetProxy = BDAB8EFC1DA931B100B8FF16 /* PBXContainerItemProxy */;
+		};
+		BDAB8F081DA931B200B8FF16 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BDAB8EE21DA931B100B8FF16 /* Starblit */;
+			targetProxy = BDAB8F071DA931B200B8FF16 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		BDAB8EEE1DA931B100B8FF16 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BDAB8EEF1DA931B100B8FF16 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		BDAB8EF31DA931B100B8FF16 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BDAB8EF41DA931B100B8FF16 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		BDAB8F0D1DA931B200B8FF16 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BDAB8F0E1DA931B200B8FF16 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		BDAB8F101DA931B200B8FF16 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = Starblit/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pstefek.Starblit;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		BDAB8F111DA931B200B8FF16 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = Starblit/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pstefek.Starblit;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		BDAB8F131DA931B200B8FF16 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = StarblitTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pstefek.StarblitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Starblit.app/Starblit";
+			};
+			name = Debug;
+		};
+		BDAB8F141DA931B200B8FF16 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = StarblitTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pstefek.StarblitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Starblit.app/Starblit";
+			};
+			name = Release;
+		};
+		BDAB8F161DA931B200B8FF16 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				INFOPLIST_FILE = StarblitUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pstefek.StarblitUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = Starblit;
+				USES_XCTRUNNER = YES;
+			};
+			name = Debug;
+		};
+		BDAB8F171DA931B200B8FF16 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = StarblitUITests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.pstefek.StarblitUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+				TEST_TARGET_NAME = Starblit;
+				USES_XCTRUNNER = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BDAB8EDE1DA931B100B8FF16 /* Build configuration list for PBXProject "Starblit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BDAB8F0D1DA931B200B8FF16 /* Debug */,
+				BDAB8F0E1DA931B200B8FF16 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BDAB8F0F1DA931B200B8FF16 /* Build configuration list for PBXNativeTarget "Starblit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BDAB8F101DA931B200B8FF16 /* Debug */,
+				BDAB8F111DA931B200B8FF16 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BDAB8F121DA931B200B8FF16 /* Build configuration list for PBXNativeTarget "StarblitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BDAB8F131DA931B200B8FF16 /* Debug */,
+				BDAB8F141DA931B200B8FF16 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BDAB8F151DA931B200B8FF16 /* Build configuration list for PBXNativeTarget "StarblitUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BDAB8F161DA931B200B8FF16 /* Debug */,
+				BDAB8F171DA931B200B8FF16 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BDAB8EDB1DA931B100B8FF16 /* Project object */;
+}
