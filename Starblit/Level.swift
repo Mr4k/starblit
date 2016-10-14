@@ -20,15 +20,13 @@ class Level{
     }
     
     func buildLevel() -> Int{
+        //these values are for testing right now
         let startX = 0
         let startY = 0;
         let endX = 7;
         let endY = 4;
         let maxTries = 100000;
         var tries = maxTries;
-        //blocks[8][0] = 1
-        //blocks[7][5] = 1
-        //return canReach(startX: startX, startY: startY, endX: endX, endY: endY) > -1;
         while canReach(startX: startX, startY: startY, endX: endX, endY: endY) < 14 {
             toggleBlock(x: Int(arc4random_uniform(UInt32(width))), y: Int(arc4random_uniform(UInt32(height))))
             tries = tries - 1;
@@ -36,10 +34,8 @@ class Level{
                 return -1
             }
         }
-        print("Found Level in n tries")
-        print(maxTries - tries)
-        print("Length:")
-        print(canReach(startX: startX, startY: startY, endX: endX, endY: endY))
+        //this might be a little ugly
+        blocks[startX][startY] = 0
         return canReach(startX: startX, startY: startY, endX: endX, endY: endY)
     }
     
