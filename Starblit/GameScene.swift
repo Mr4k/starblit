@@ -11,28 +11,23 @@ import SpriteKit
 class GameScene: SKScene {
     
     let width = 9
-    let height = 12
+    let height = 15
     let blockImageSize:CGFloat = 184;
     let player = SKSpriteNode(imageNamed:"Block")
     var playerPos:(x:Int,y:Int) = (0,0)
+    var playerCanMove:Bool = true
     
     
-    let level = Level(width: 9,height: 12)
+    let level = Level(width: 9,height: 15)
+    var blocks:[SKSpriteNode] = []
     
     override func didMove(to view: SKView) {
         /* Setup your scene here */
         //For now set up a level here
         backgroundColor = .white
         print(level.buildLevel())
-        for i in 0..<level.width{
-            for j in 0..<level.height{
-                if level.blocks[i][j] == 1{
-                    addBlock(x: i, y: j)
-                }
-            }
-        }
+        layoutLevel()
         addPlayer(x: 0, y: 0)
-        addGoal(x: 7, y: 4)
         
         //initalize our swipes
         //tinder
@@ -42,6 +37,17 @@ class GameScene: SKScene {
             self.view?.addGestureRecognizer(swipe)
         }
         
+    }
+    
+    func layoutLevel(){
+        for i in 0..<level.width{
+            for j in 0..<level.height{
+                if level.blocks[i][j] == 1{
+                    addBlock(x: i, y: j)
+                }
+            }
+        }
+        addGoal(x: level.endPos.x, y: level.endPos.y)
     }
     
     func swipe(gesture: UIGestureRecognizer) {
@@ -81,13 +87,30 @@ class GameScene: SKScene {
     }
     
     func movePlayer(direction:Int){
+        if !playerCanMove {return}
         let newPoint = level.getNeighbors(x: playerPos.x, y: playerPos.y)[direction]
         playerPos = newPoint
+        playerCanMove = false
         let cgPoint = CGPoint(x:scaleToScreen(val: newPoint.x),y:scaleToScreen(val: newPoint.y))
         let dist = max(abs(cgPoint.x-player.position.x),abs(cgPoint.y-player.position.y))
         let action = SKAction.move(to: cgPoint, duration: (0.0012 * Double(dist)))
         action.timingMode = .easeIn
-        player.run(action)
+        player.run(action, completion: playerFinishedMoving)
+    }
+    
+    func playerFinishedMoving(){
+        playerCanMove = true
+        if playerPos.x < 0 || playerPos.x>=width || playerPos.y < 0 || playerPos.y >= height{
+            playerPos = level.startPos
+            player.position = CGPoint(x:scaleToScreen(val: level.startPos.x),y:scaleToScreen(val: level.startPos.y))
+        } else if playerPos == level.endPos{
+            level.clear()
+            clearBlocks()
+            level.buildLevel()
+            layoutLevel()
+            playerPos = level.startPos
+            player.position = CGPoint(x:scaleToScreen(val: level.startPos.x),y:scaleToScreen(val: level.startPos.y))
+        }
     }
     
     func addGoal(x:Int,y:Int){
@@ -98,6 +121,7 @@ class GameScene: SKScene {
         sprite.position = CGPoint(x:CGFloat(x) * blockSize + blockSize/2, y:CGFloat(y) * blockSize + blockSize/2)
         sprite.color = .cyan
         sprite.colorBlendFactor = 1
+        blocks.append(sprite)
         self.addChild(sprite)
     }
     
@@ -110,7 +134,14 @@ class GameScene: SKScene {
         //sprite.position = CGPoint(x:50,y:50)
         sprite.color = .black
         sprite.colorBlendFactor = 1
+        blocks.append(sprite)
         self.addChild(sprite)
+    }
+    
+    func clearBlocks(){
+        for block in blocks{
+            block.removeFromParent()
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

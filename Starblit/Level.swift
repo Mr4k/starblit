@@ -16,6 +16,8 @@ class Level{
     var blocks:[[Int]] = []
     var width:Int = 0
     var height:Int = 0
+    var startPos:(x:Int,y:Int) = (0,0)
+    var endPos:(x:Int,y:Int) = (8,8)
     
     init(width:Int, height:Int) {
         blocks = [[Int]](repeating:[Int](repeating: 0, count: height), count: width)
@@ -23,27 +25,27 @@ class Level{
         self.height = height
     }
     
+    func clear(){
+        blocks = [[Int]](repeating:[Int](repeating: 0, count: height), count: width)
+    }
+    
     func buildLevel() -> Int{
         //these values are for testing right now and will be parameterized later
-        let startX = 0
-        let startY = 0;
-        let endX = 7;
-        let endY = 4;
         let maxTries = 100000;
         var tries = maxTries;
-        while canReach(startX: startX, startY: startY, endX: endX, endY: endY) < 7 {
+        while canReach(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y) < 10 {
             toggleBlock(x: Int(arc4random_uniform(UInt32(width))), y: Int(arc4random_uniform(UInt32(height))))
-            blocks[endX][endY] = 2
-            blocks[startX][startY] = 0
+            blocks[endPos.x][endPos.y] = 2
+            blocks[startPos.x][startPos.y] = 0
             tries = tries - 1;
             if tries < 0{
                 return -1
             }
         }
         //this might be a little ugly
-        blocks[startX][startY] = 0
+        blocks[startPos.x][startPos.y] = 0
         print("Found in \(maxTries-tries) tries")
-        return canReach(startX: startX, startY: startY, endX: endX, endY: endY)
+        return canReach(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
     }
     
     func toggleBlock(x:Int, y:Int){
