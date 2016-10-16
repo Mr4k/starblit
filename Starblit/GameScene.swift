@@ -10,15 +10,15 @@ import SpriteKit
 
 class GameScene: SKScene {
     
-    let width = 9
-    let height = 15
+    let width = 12
+    let height = 18
     let blockImageSize:CGFloat = 184;
     let player = SKSpriteNode(imageNamed:"Block")
     var playerPos:(x:Int,y:Int) = (0,0)
     var playerCanMove:Bool = true
     
     
-    let level = Level(width: 9,height: 15)
+    let level = Level(width: 12,height: 18)
     var blocks:[SKSpriteNode] = []
     
     override func didMove(to view: SKView) {

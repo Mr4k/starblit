@@ -31,19 +31,25 @@ class Level{
     
     func buildLevel() -> Int{
         //these values are for testing right now and will be parameterized later
+        //this is the most basic generation strategy
         let maxTries = 100000;
         var tries = maxTries;
-        while canReach(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y) < 10 {
-            toggleBlock(x: Int(arc4random_uniform(UInt32(width))), y: Int(arc4random_uniform(UInt32(height))))
+        var dist = canReach(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
+        while dist < 8 {
+            let coords:(x:Int,y:Int) = (Int(arc4random_uniform(UInt32(width))),
+                                        Int(arc4random_uniform(UInt32(height))))
+            blocks[coords.x][coords.y] = 1 - blocks[coords.x][coords.y]
             blocks[endPos.x][endPos.y] = 2
             blocks[startPos.x][startPos.y] = 0
+            dist = canReach(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
             tries = tries - 1;
             if tries < 0{
                 return -1
             }
         }
+        
+        
         //this might be a little ugly
-        blocks[startPos.x][startPos.y] = 0
         print("Found in \(maxTries-tries) tries")
         return canReach(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
     }
@@ -76,6 +82,7 @@ class Level{
                 break
             } else if blocks[xx + 1][yy] == 2{
                 neighbors[0] = (xx + 1,yy)
+                break
             }
             xx += 1
         }
