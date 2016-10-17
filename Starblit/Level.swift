@@ -9,15 +9,19 @@
 import Foundation
 
 /**
-*This class is responisble for holding and generating levels
+*This class is responsible for holding and generating levels
 **/
 
 class Level{
+    //change to data structure
+    //a block is a number
+    //the first bit represents background color
+    //the second bit represents whether or not it is the finish
     var blocks:[[Int]] = []
     var width:Int = 0
     var height:Int = 0
-    var startPos:(x:Int,y:Int) = (0,0)
-    var endPos:(x:Int,y:Int) = (8,8)
+    var startPos:(x:Int,y:Int,invert:Int) = (0,0,0)
+    var endPos:(x:Int,y:Int,invert:Int) = (8,8,0)
     
     init(width:Int, height:Int) {
         blocks = [[Int]](repeating:[Int](repeating: 0, count: height), count: width)
@@ -32,15 +36,16 @@ class Level{
     func buildLevel() -> Int{
         //these values are for testing right now and will be parameterized later
         //this is the most basic generation strategy
-        let maxTries = 100000;
+        let maxTries = 10000;
         var tries = maxTries;
+        //make the end the end
+        blocks[endPos.x][endPos.y] ^= (1 << 1)
         var dist = canReach(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
-        while dist < 8 {
+        while dist < 12 {
             let coords:(x:Int,y:Int) = (Int(arc4random_uniform(UInt32(width))),
                                         Int(arc4random_uniform(UInt32(height))))
-            blocks[coords.x][coords.y] = 1 - blocks[coords.x][coords.y]
-            blocks[endPos.x][endPos.y] = 2
-            blocks[startPos.x][startPos.y] = 0
+            //flip the color of the block at coords
+            blocks[coords.x][coords.y] ^= 1
             dist = canReach(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
             tries = tries - 1;
             if tries < 0{
@@ -55,7 +60,7 @@ class Level{
     }
     
     func toggleBlock(x:Int, y:Int){
-        blocks[x][y] = 1 - blocks[x][y]
+        
     }
     
     func printLevel(){
@@ -68,21 +73,28 @@ class Level{
         }
     }
     
-    func getNeighbors(x:Int,y:Int) -> [(x:Int,y:Int)] {
+    func getNeighbors(x:Int,y:Int,invert:Int) -> [(x:Int,y:Int,invert:Int)] {
         //get neighboring blocks
-        var neighbors:[(x:Int,y:Int)] = [(width,y),(-1,y),(x,-1),(x,height)]
+        var neighbors:[(x:Int,y:Int,invert:Int)] = [(width,y,invert),(-1,y,invert),(x,-1,invert),(x,height,invert)]
         //right
         var xx = x;
         var yy = y;
         while xx + 1 < width{
-            if blocks[xx + 1][yy] == 1{
-                if blocks[xx][yy] == 0{
-                    neighbors[0] = (xx,yy)
+            //check if the block next to us is solid
+            if blocks[xx + 1][yy] & 1 == 1 - invert{
+                //in the special case where we are right next to it we can invert dimensions
+                if xx == x{
+                    neighbors[0] = (xx+1,yy,1-invert)
+                } else {
+                    neighbors[0] = (xx,yy,invert)
                 }
                 break
-            } else if blocks[xx + 1][yy] == 2{
-                neighbors[0] = (xx + 1,yy)
-                break
+            } else /*the block next to us is passable*/{
+                //if the block is the finish add it
+                if blocks[xx+1][yy] & 2 > 0{
+                    neighbors[0] = (xx+1, yy, invert)
+                    break
+                }
             }
             xx += 1
         }
@@ -90,15 +102,21 @@ class Level{
         xx = x
         yy = y
         while xx - 1 > -1{
-            if blocks[xx - 1][yy] == 1{
-                if blocks[xx][yy] == 0{
-                    neighbors[1] = ((xx,yy))
+            //check if the block next to us is solid
+            if blocks[xx - 1][yy] & 1 == 1 - invert{
+                //in the special case where we are right next to it we can invert dimensions
+                if xx == x{
+                    neighbors[1] = (xx-1,yy,1-invert)
+                } else {
+                    neighbors[1] = (xx,yy,invert)
                 }
                 break
-            }
-            else if blocks[xx - 1][yy] == 2{
-                neighbors[1] = (xx - 1,yy)
-                break
+            } else /*the block next to us is passable*/{
+                //if the block is the finish add it
+                if blocks[xx-1][yy] & 2 > 0{
+                    neighbors[1] = (xx-1, yy, invert)
+                    break
+                }
             }
             xx -= 1
         }
@@ -106,14 +124,21 @@ class Level{
         xx = x
         yy = y
         while yy - 1 > -1{
-            if blocks[xx][yy - 1] == 1{
-                if blocks[xx][yy] == 0{
-                    neighbors[2] = ((xx,yy))
+            //check if the block next to us is solid
+            if blocks[xx][yy - 1] & 1 == 1 - invert{
+                //in the special case where we are right next to it we can invert dimensions
+                if yy == y{
+                    neighbors[2] = (xx,yy - 1,1-invert)
+                } else {
+                    neighbors[2] = (xx,yy,invert)
                 }
                 break
-            } else if blocks[xx][yy - 1] == 2{
-                neighbors[2] = (xx,yy - 1)
-                break
+            } else /*the block next to us is passable*/{
+                //if the block is the finish add it
+                if blocks[xx][yy - 1] & 2 > 0{
+                    neighbors[2] = (xx, yy - 1, invert)
+                    break
+                }
             }
             yy -= 1
         }
@@ -121,16 +146,21 @@ class Level{
         xx = x
         yy = y
         while yy + 1 < height{
-            //print(xx,yy + 1)
-            if blocks[xx][yy + 1] == 1{
-                if blocks[xx][yy] == 0{
-                    neighbors[3] = (xx,yy)
+            //check if the block next to us is solid
+            if blocks[xx][yy + 1] & 1 == 1 - invert{
+                //in the special case where we are right next to it we can invert dimensions
+                if yy == y{
+                    neighbors[3] = (xx,yy + 1,1-invert)
+                } else {
+                    neighbors[3] = (xx,yy,invert)
                 }
                 break
-            }
-            else if blocks[xx][yy + 1] == 2{
-                neighbors[3] = (xx,yy + 1)
-                break
+            } else /*the block next to us is passable*/{
+                //if the block is the finish add it
+                if blocks[xx][yy + 1] & 2 > 0{
+                    neighbors[3] = (xx, yy + 1, invert)
+                    break
+                }
             }
             yy += 1
         }
@@ -140,21 +170,21 @@ class Level{
     func canReach(startX:Int,startY:Int,endX:Int,endY:Int) -> Int{
         //use a breadth first search
         //our state is an 3 tuple
-        var states:[[Int]] = [[Int]](repeating:[Int](repeating: -1, count: height), count: width)
-        var queue:[(x:Int,y:Int,step:Int)] = []
-        queue.append((startX,startY,0))
+        var states:[[[Int]]] = [[[Int]]](repeating:[[Int]](repeating:[Int](repeating: -1, count: height), count: width), count:2)
+        var queue:[(x:Int,y:Int,invert:Int,step:Int)] = []
+        queue.append((startX,startY,0,0))
         while queue.count > 0{
             let state = queue.remove(at: 0)
             //print(state)
             if state.0 == endX && state.1 == endY{
-                return state.2
+                return state.3
             }
-            if states[state.0][state.1] > -1{
+            if states[state.2][state.0][state.1] > -1{
                 continue
             } else {
-                states[state.0][state.1] = state.2
+                states[state.2][state.0][state.1] = state.3
                 //check for neighboring blocks
-                let neighbors = getNeighbors(x: state.0, y: state.1).filter({$0.x < width && $0.x > -1 && $0.y > -1 && $0.y < height && states[$0.x][$0.y] < 0}).map({($0.x,$0.y,state.2+1)})
+                let neighbors = getNeighbors(x: state.0, y: state.1, invert: state.invert).filter({$0.x < width && $0.x > -1 && $0.y > -1 && $0.y < height && states[$0.invert][$0.x][$0.y] < 0}).map({($0.x,$0.y,$0.invert,state.3+1)})
                 for neighbor in neighbors{
                     queue.append(neighbor)
                 }

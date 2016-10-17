@@ -14,9 +14,13 @@ class GameScene: SKScene {
     let height = 18
     let blockImageSize:CGFloat = 184;
     let player = SKSpriteNode(imageNamed:"Block")
-    var playerPos:(x:Int,y:Int) = (0,0)
+    var playerPos:(x:Int,y:Int,invert:Int) = (0,0,0)
+    var playerInvert = 0
+    var shouldInvert = false
     var playerCanMove:Bool = true
-    
+    var backgroundSprite:SKSpriteNode = SKSpriteNode(imageNamed:"Block")
+    var spinners:[SKSpriteNode] = []
+    var spinnersBackgroundBlocks:[SKSpriteNode] = []
     
     let level = Level(width: 12,height: 18)
     var blocks:[SKSpriteNode] = []
@@ -24,10 +28,8 @@ class GameScene: SKScene {
     override func didMove(to view: SKView) {
         /* Setup your scene here */
         //For now set up a level here
-        backgroundColor = .white
         print(level.buildLevel())
-        layoutLevel()
-        addPlayer(x: 0, y: 0)
+       initLevel()
         
         //initalize our swipes
         //tinder
@@ -37,6 +39,18 @@ class GameScene: SKScene {
             self.view?.addGestureRecognizer(swipe)
         }
         
+        
+    }
+    
+    func initLevel(){
+        backgroundSprite.xScale = 15
+        backgroundSprite.yScale = 15
+        backgroundSprite.colorBlendFactor = 1
+        backgroundSprite.zPosition = -2
+        self.addChild(backgroundSprite)
+        backgroundColor = .white
+        layoutLevel()
+        addPlayer(x: 0, y: 0)
     }
     
     func layoutLevel(){
@@ -88,7 +102,7 @@ class GameScene: SKScene {
     
     func movePlayer(direction:Int){
         if !playerCanMove {return}
-        let newPoint = level.getNeighbors(x: playerPos.x, y: playerPos.y)[direction]
+        let newPoint = level.getNeighbors(x: playerPos.x, y: playerPos.y,invert:playerPos.invert)[direction]
         playerPos = newPoint
         playerCanMove = false
         let cgPoint = CGPoint(x:scaleToScreen(val: newPoint.x),y:scaleToScreen(val: newPoint.y))
@@ -96,6 +110,19 @@ class GameScene: SKScene {
         let action = SKAction.move(to: cgPoint, duration: (0.0012 * Double(dist)))
         action.timingMode = .easeIn
         player.run(action, completion: playerFinishedMoving)
+    }
+    
+    func invertWorld(){
+        let action = SKAction.colorize(with: [UIColor.black,UIColor.white][playerInvert], colorBlendFactor: 1, duration: 0.1)
+        let bkaction = SKAction.colorize(with: [UIColor.black,UIColor.white][1-playerInvert], colorBlendFactor: 1, duration: 0.1)
+        for block in blocks{
+            block.run(action, completion: invertComplete)
+        }
+        backgroundSprite.run(bkaction)
+    }
+    
+    func invertComplete(){
+        playerCanMove = true
     }
     
     func playerFinishedMoving(){
@@ -107,9 +134,13 @@ class GameScene: SKScene {
             level.clear()
             clearBlocks()
             level.buildLevel()
-            layoutLevel()
+            initLevel()
             playerPos = level.startPos
             player.position = CGPoint(x:scaleToScreen(val: level.startPos.x),y:scaleToScreen(val: level.startPos.y))
+        } else if level.blocks[playerPos.x][playerPos.y] == 3{
+                playerInvert = 1 - playerInvert
+                invertWorld()
+                playerCanMove = false
         }
     }
     
@@ -121,7 +152,30 @@ class GameScene: SKScene {
         sprite.position = CGPoint(x:CGFloat(x) * blockSize + blockSize/2, y:CGFloat(y) * blockSize + blockSize/2)
         sprite.color = .cyan
         sprite.colorBlendFactor = 1
-        blocks.append(sprite)
+        //blocks.append(sprite)
+        self.addChild(sprite)
+    }
+    
+    //clean up this code later
+    func addSpinner(x:Int,y:Int){
+        let sprite = SKSpriteNode(imageNamed:"Spinner")
+        let blockSize = min(size.width / CGFloat(width), size.height / CGFloat(height))
+        sprite.xScale = blockSize / blockImageSize
+        sprite.yScale = blockSize / blockImageSize
+        sprite.position = CGPoint(x:CGFloat(x) * blockSize + blockSize/2, y:CGFloat(y) * blockSize + blockSize/2)
+        //sprite.position = CGPoint(x:50,y:50)
+        sprite.color = .black
+        sprite.colorBlendFactor = 1
+        //blocks.append(sprite)
+        let sprite2 = SKSpriteNode(imageNamed:"Block")
+        sprite2.xScale = blockSize / blockImageSize
+        sprite2.yScale = blockSize / blockImageSize
+        sprite2.position = CGPoint(x:CGFloat(x) * blockSize + blockSize/2, y:CGFloat(y) * blockSize + blockSize/2)
+        //sprite.position = CGPoint(x:50,y:50)
+        sprite2.color = .white
+        sprite2.colorBlendFactor = 1
+        sprite2.zPosition = -1
+        self.addChild(sprite2)
         self.addChild(sprite)
     }
     
@@ -139,9 +193,7 @@ class GameScene: SKScene {
     }
     
     func clearBlocks(){
-        for block in blocks{
-            block.removeFromParent()
-        }
+        removeAllChildren()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
