@@ -14,7 +14,7 @@ class GameScene: SKScene {
     let height = 18
     let blockImageSize:CGFloat = 184;
     let player = SKSpriteNode(imageNamed:"Block")
-    var playerPos:(x:Int,y:Int,invert:Int) = (0,0,0)
+    var playerPos:(x:Int,y:Int,z:Int) = (0,0,0)
     var playerInvert = 0
     var shouldInvert = false
     var playerCanMove:Bool = true
@@ -102,7 +102,7 @@ class GameScene: SKScene {
     
     func movePlayer(direction:Int){
         if !playerCanMove {return}
-        let newPoint = level.getNeighbors(x: playerPos.x, y: playerPos.y,invert:playerPos.invert)[direction]
+        let newPoint = level.getNeighbors(x: playerPos.x, y: playerPos.y, invert:playerPos.z)[direction]
         playerPos = newPoint
         playerCanMove = false
         let cgPoint = CGPoint(x:scaleToScreen(val: newPoint.x),y:scaleToScreen(val: newPoint.y))
