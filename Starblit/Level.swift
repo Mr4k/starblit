@@ -33,24 +33,29 @@ class Level{
         blocks = [[Int]](repeating:[Int](repeating: 0, count: height), count: width)
     }
     
-    func buildLevel() -> Int{
+    func buildLevel() -> Float{
         //these values are for testing right now and will be parameterized later
         //this is the most basic generation strategy
-        let maxTries = 100000;
+        let maxTries = 2000;
         var tries = maxTries;
         //make the end the end
         blocks[endPos.x][endPos.y] ^= (1 << 1)
         var path = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
-        while evalLevel(path: path) < 100 {
+        while evalLevel(path: path) < 1000 {
+            print("did loop")
             let coords:(x:Int,y:Int) = (Int(arc4random_uniform(UInt32(width))),
                                         Int(arc4random_uniform(UInt32(height))))
-            //flip the color of the block at coords
-            blocks[coords.x][coords.y] ^= 1
-            path = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
             tries = tries - 1;
             if tries < 0{
-                return -1
+                break;
             }
+            //flip the color of the block at coords
+            blocks[coords.x][coords.y] ^= 1
+            let newpath = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
+            if evalLevel(path: path) > evalLevel(path: newpath){
+                blocks[coords.x][coords.y] ^= 1
+            }
+            path = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
         }
         
         
@@ -61,7 +66,7 @@ class Level{
     
     
     //heuristic for how interesting a level is
-    func evalLevel(path:(path:[(x:Int,y:Int,z:Int)], branchingFactor:Float)) -> Int{
+    func evalLevel(path:(path:[(x:Int,y:Int,z:Int)], branchingFactor:Float)) -> Float{
         var manhattenDistance = 0;
         let stepsToSolve = path.path.count
         if stepsToSolve == 0{
@@ -72,7 +77,9 @@ class Level{
             manhattenDistance += abs(lastStep.x - step.x) + abs(lastStep.y - step.y)
             lastStep = step;
         }
-        return manhattenDistance * 2 + stepsToSolve + Int(path.branchingFactor * 4)
+        let blockCount = blocks.flatMap({$0.map({min($0,1)})}).reduce(0,{$0+$1})
+        print("dist:\(manhattenDistance) steps:\(stepsToSolve) branch:\(path.branchingFactor)")
+        return (Float(manhattenDistance * 4) + path.branchingFactor)/(Float(blockCount * 4)+0.001)
     }
     
     func toggleBlock(x:Int, y:Int){
