@@ -10,8 +10,8 @@ import SpriteKit
 
 class GameScene: SKScene {
     
-    let width = 12
-    let height = 18
+    let width = 10
+    let height = 12
     let blockImageSize:CGFloat = 184;
     let player = SKSpriteNode(imageNamed:"Block")
     var playerPos:(x:Int,y:Int,z:Int) = (0,0,0)
@@ -22,7 +22,7 @@ class GameScene: SKScene {
     var spinners:[SKSpriteNode] = []
     var spinnersBackgroundBlocks:[SKSpriteNode] = []
     
-    let level = Level(width: 12,height: 18)
+    let level = Level(width: 10,height: 12)
     var blocks:[SKSpriteNode] = []
     
     override func didMove(to view: SKView) {
@@ -50,7 +50,8 @@ class GameScene: SKScene {
         self.addChild(backgroundSprite)
         backgroundColor = .white
         layoutLevel()
-        addPlayer(x: 0, y: 0)
+        addPlayer(x: level.startPos.x, y: level.startPos.y)
+        playerPos = (level.startPos.x, y: level.startPos.y, 0)
     }
     
     func layoutLevel(){
@@ -153,29 +154,6 @@ class GameScene: SKScene {
         sprite.color = .cyan
         sprite.colorBlendFactor = 1
         //blocks.append(sprite)
-        self.addChild(sprite)
-    }
-    
-    //clean up this code later
-    func addSpinner(x:Int,y:Int){
-        let sprite = SKSpriteNode(imageNamed:"Spinner")
-        let blockSize = min(size.width / CGFloat(width), size.height / CGFloat(height))
-        sprite.xScale = blockSize / blockImageSize
-        sprite.yScale = blockSize / blockImageSize
-        sprite.position = CGPoint(x:CGFloat(x) * blockSize + blockSize/2, y:CGFloat(y) * blockSize + blockSize/2)
-        //sprite.position = CGPoint(x:50,y:50)
-        sprite.color = .black
-        sprite.colorBlendFactor = 1
-        //blocks.append(sprite)
-        let sprite2 = SKSpriteNode(imageNamed:"Block")
-        sprite2.xScale = blockSize / blockImageSize
-        sprite2.yScale = blockSize / blockImageSize
-        sprite2.position = CGPoint(x:CGFloat(x) * blockSize + blockSize/2, y:CGFloat(y) * blockSize + blockSize/2)
-        //sprite.position = CGPoint(x:50,y:50)
-        sprite2.color = .white
-        sprite2.colorBlendFactor = 1
-        sprite2.zPosition = -1
-        self.addChild(sprite2)
         self.addChild(sprite)
     }
     

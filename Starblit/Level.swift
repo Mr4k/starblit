@@ -20,8 +20,8 @@ class Level{
     var blocks:[[Int]] = []
     var width:Int = 0
     var height:Int = 0
-    var startPos:(x:Int,y:Int,z:Int) = (0,0,0)
-    var endPos:(x:Int,y:Int,z:Int) = (8,8,0)
+    var startPos:(x:Int,y:Int,z:Int) = (1,0,0)
+    var endPos:(x:Int,y:Int,z:Int) = (5,4,0)
     
     init(width:Int, height:Int) {
         blocks = [[Int]](repeating:[Int](repeating: 0, count: height), count: width)
@@ -51,6 +51,8 @@ class Level{
             }
             //flip the color of the block at coords
             blocks[coords.x][coords.y] ^= 1
+            blocks[startPos.x][startPos.y] = 0
+            blocks[endPos.x][endPos.y] = 2
             let newpath = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
             if evalLevel(path: path) > evalLevel(path: newpath){
                 blocks[coords.x][coords.y] ^= 1
@@ -61,6 +63,7 @@ class Level{
         
         //this might be a little ugly
         print("Found in \(maxTries-tries) tries")
+        postProcess()
         return evalLevel(path: getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y))
     }
     
@@ -79,11 +82,21 @@ class Level{
         }
         let blockCount = blocks.flatMap({$0.map({min($0,1)})}).reduce(0,{$0+$1})
         print("dist:\(manhattenDistance) steps:\(stepsToSolve) branch:\(path.branchingFactor)")
-        return (Float(manhattenDistance * 4) + path.branchingFactor)/(Float(blockCount * 4)+0.001)
+        return (Float(manhattenDistance * 3) + Float(stepsToSolve) * 0.5 + path.branchingFactor)/(Float(blockCount * 2)+0.001)
     }
     
-    func toggleBlock(x:Int, y:Int){
-        
+    func postProcess(){
+        //clean up some of the unimportant blocks to obscure solution (but not too many so branch factor still stays high)
+        let numSteps = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y).path.count
+        for i in 0..<width{
+            for j in 0..<height{
+                let oldval = blocks[i][j]
+                blocks[i][j] = 0
+                if getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y).path.count < numSteps || arc4random_uniform(10) > 5{
+                    blocks[i][j] = oldval
+                }
+            }
+        }
     }
     
     func printLevel(){
