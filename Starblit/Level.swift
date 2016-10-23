@@ -8,6 +8,18 @@
 
 import Foundation
 
+extension Array
+{
+    /** Randomizes the order of an array's elements. */
+    mutating func shuffle()
+    {
+        for _ in 0..<10
+        {
+            sort { (_,_) in arc4random() < arc4random() }
+        }
+    }
+}
+
 /**
 *This class is responsible for holding and generating levels
 **/
@@ -36,13 +48,13 @@ class Level{
     func buildLevel() -> Float{
         //these values are for testing right now and will be parameterized later
         //this is the most basic generation strategy
-        let maxTries = 2000;
+        let maxTries = 3000;
         var tries = maxTries;
         //make the end the end
         blocks[endPos.x][endPos.y] ^= (1 << 1)
         var path = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
         while evalLevel(path: path) < 1000 {
-            print("did loop")
+            //print("did loop")
             let coords:(x:Int,y:Int) = (Int(arc4random_uniform(UInt32(width))),
                                         Int(arc4random_uniform(UInt32(height))))
             tries = tries - 1;
@@ -81,22 +93,44 @@ class Level{
             lastStep = step;
         }
         let blockCount = blocks.flatMap({$0.map({min($0,1)})}).reduce(0,{$0+$1})
-        print("dist:\(manhattenDistance) steps:\(stepsToSolve) branch:\(path.branchingFactor)")
-        return (Float(manhattenDistance * 3) + Float(stepsToSolve) * 0.5 + path.branchingFactor)/(Float(blockCount * 2)+0.001)
+        //print("dist:\(manhattenDistance) steps:\(stepsToSolve) branch:\(path.branchingFactor)")
+        /*return (Float(manhattenDistance * 8) + Float(stepsToSolve) * 0.1 + path.branchingFactor)/(Float(blockCount)+0.001)*/
+        return Float(manhattenDistance+1)/Float(stepsToSolve) * Float(manhattenDistance + stepsToSolve)
     }
     
     func postProcess(){
         //clean up some of the unimportant blocks to obscure solution (but not too many so branch factor still stays high)
-        let numSteps = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y).path.count
+        var numSteps = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y).path.count
+        var xmaps:[Int] = [Int]()
+        xmaps+=0...(width-1)
+        var ymaps:[Int] = [Int]()
+        ymaps+=0...(height-1)
+        xmaps.shuffle()
+        ymaps.shuffle()
+        print("about to post process with \(numSteps) steps")
         for i in 0..<width{
             for j in 0..<height{
-                let oldval = blocks[i][j]
-                blocks[i][j] = 0
-                if getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y).path.count < numSteps || arc4random_uniform(10) > 5{
-                    blocks[i][j] = oldval
+                let oldval = blocks[xmaps[i]][ymaps[j]]
+                blocks[xmaps[i]][ymaps[j]] = 0
+                if getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y).path.count < numSteps || arc4random_uniform(10) > 11{
+                    blocks[xmaps[i]][ymaps[j]] = oldval
                 }
             }
         }
+        numSteps = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y).path.count
+        print("finished post process with \(numSteps) steps")
+    }
+    
+    func adjacentBlocks(x:Int,y:Int) -> [Int]{
+        var neighbors:[Int] = [0,0,0,0]
+        for i in 0...3{
+            let coords = radialSearch(i: i, startx: x, starty: y)
+            if coords.x == x && coords.y == y{
+                continue
+            }
+            neighbors[i] = blocks[coords.x][coords.y]
+        }
+        return neighbors
     }
     
     func printLevel(){
@@ -241,11 +275,11 @@ class Level{
     func radialSearch(i:Int,startx:Int,starty:Int) -> (x:Int,y:Int) {
         let dist = (i/4 + 1)
         switch i%4{
-        case 0:
-            return (min(startx + dist,width - 1),starty)
-        case 1:
-            return (max(startx - dist,0),starty)
         case 2:
+            return (min(startx + dist,width - 1),starty)
+        case 0:
+            return (max(startx - dist,0),starty)
+        case 1:
             return (startx,max(starty - dist,0))
         case 3:
             return (startx,min(starty + dist,height - 1))
