@@ -36,9 +36,9 @@ class GameScene: SKScene {
     let padding = 0.1
     var screenWidth:CGFloat = 0
     var screenHeight:CGFloat = 0
-    let blockImageSize:CGFloat = 32;
+    let blockImageSize:CGFloat = 128;
     let player = SKSpriteNode(imageNamed:"White")
-    var playerPos:(x:Int,y:Int,z:Int) = (0,0,0)
+    var playerPos:(x:Int,y:Int) = (0,0)
     var playerInvert = 0
     var shouldInvert = false
     var playerCanMove:Bool = true
@@ -50,7 +50,10 @@ class GameScene: SKScene {
     var stars:[SKSpriteNode] = []
     var timePassed:Double = 0
     var root:SKNode = SKNode()
+    var oldRoot = SKNode()
+    var stage = SKNode()
     var screenShake:Double = 0
+    var exitDirection:Int = 2
     
     override func didMove(to view: SKView) {
         /* Setup your scene here */
@@ -58,9 +61,12 @@ class GameScene: SKScene {
         screenWidth = size.width * CGFloat(1-padding)
         screenHeight = size.height * CGFloat(1-padding)
         
-        print(level.buildLevel())
+        print(level.buildLevel(start:selectFromRectOutline(width: width - 1, height: height - 1,side:exitDirection),
+                               end:selectFromRectOutline(width: width - 1, height: height - 1, side:0)))
+        addStars()
         initLevel()
-        self.addChild(root)
+        stage.addChild(root)
+        self.addChild(stage)
         
         //initalize our swipes
         //tinder
@@ -73,13 +79,33 @@ class GameScene: SKScene {
         
     }
     
+    func selectFromRectOutline(width:Int,height:Int, side:Int) -> (x:Int,y:Int){
+        switch side%4{
+            case 2:
+                return (width - 1, Int(arc4random_uniform(UInt32(height))))
+            case 0:
+                return (0, Int(arc4random_uniform(UInt32(height))))
+            case 1:
+                return (Int(arc4random_uniform(UInt32(height))), 0)
+            case 3:
+                return (Int(arc4random_uniform(UInt32(height))), width - 1)
+            default:
+                return (0,0)
+        }
+        let xOrY = arc4random_uniform(2) > 0
+        if xOrY {
+            return (Int(arc4random_uniform(2)) * width,Int(arc4random_uniform(UInt32(height))))
+        } else {
+            return (Int(arc4random_uniform(UInt32(width))), Int(arc4random_uniform(2)) * height)
+        }
+    }
+    
     func initLevel(){
         //backgroundColor = "#484D6D".hexColor
         backgroundColor = .black
         layoutLevel()
         addPlayer(x: level.startPos.x, y: level.startPos.y)
-        playerPos = (level.startPos.x, y: level.startPos.y, 0)
-        addStars()
+        playerPos = (level.startPos.x, y: level.startPos.y)
     }
     
     func layoutLevel(){
@@ -114,7 +140,7 @@ class GameScene: SKScene {
         }
     }
     
-    func scaleToScreen(x:Int,y:Int)->CGPoint{
+    func scaleToScreen(x:Int,y:Int) -> CGPoint{
         let blockSize = min(screenWidth / CGFloat(width), screenHeight / CGFloat(height))
         let paddingW = screenWidth - min(screenWidth / CGFloat(width), screenHeight / CGFloat(height)) * CGFloat(width)
         let paddingH = screenHeight - min(screenWidth / CGFloat(width), screenHeight / CGFloat(height)) * CGFloat(width)
@@ -134,7 +160,7 @@ class GameScene: SKScene {
     
     func movePlayer(direction:Int){
         if !playerCanMove {return}
-        let newPoint = level.getNeighbors(x: playerPos.x, y: playerPos.y, invert:playerPos.z)[direction]
+        let newPoint = level.getNeighbors(x: playerPos.x, y: playerPos.y)[direction]
         playerPos = newPoint
         playerCanMove = false
         let cgPoint = scaleToScreen(x: newPoint.x, y: newPoint.y)
@@ -151,9 +177,16 @@ class GameScene: SKScene {
             playerPos = level.startPos
             player.position = scaleToScreen(x: level.startPos.x, y: level.startPos.y)
         } else if playerPos == level.endPos{
+            let rootTranslations:[CGPoint] = [CGPoint(x:size.width,y:0), CGPoint(x:-size.width,y:0), CGPoint(x:0,y:size.height),CGPoint(x:0,y:-size.height)]
+            exitDirection = (exitDirection + 2) % 4
+            root.position.x = -rootTranslations[exitDirection].x
+            root.position.y = -rootTranslations[exitDirection].y
             level.clear()
             clearBlocks()
-            level.buildLevel()
+            root.position.x = rootTranslations[exitDirection].x
+            root.position.y = rootTranslations[exitDirection].y
+            level.buildLevel(start:selectFromRectOutline(width: width - 1, height: height - 1, side:exitDirection),
+                             end:selectFromRectOutline(width: width - 1, height: height - 1, side:(exitDirection + 2) % 2))
             initLevel()
             playerPos = level.startPos
             player.position = scaleToScreen(x: level.startPos.x, y: level.startPos.y)
@@ -175,13 +208,13 @@ class GameScene: SKScene {
     }
     
     func addBlock(x:Int,y:Int){
-        let sprite = SKSpriteNode(texture:SKTexture(imageNamed: "White"))
+        let sprite = SKSpriteNode(texture:SKTexture(imageNamed: "Block"))
         let blockSize = min(screenWidth / CGFloat(width), screenHeight / CGFloat(height))
         sprite.xScale = blockSize / blockImageSize
         sprite.yScale = blockSize / blockImageSize
         sprite.position = scaleToScreen(x: x, y: y)
-        sprite.color = .black
-        sprite.colorBlendFactor = 1
+        //sprite.color = .black
+        //sprite.colorBlendFactor = 1
         let neighbors = level.adjacentBlocks(x: x, y: y)
         sprite.zPosition = -2
         root.addChild(sprite)
@@ -208,20 +241,31 @@ class GameScene: SKScene {
             sprite.color = .white
             sprite.colorBlendFactor = 1
             sprite.zPosition = -3
-            root.addChild(sprite)
+            self.addChild(sprite)
             stars.append(sprite)
         }
     }
     
     func clearBlocks(){
+        oldRoot = root.copy() as! SKNode
         root.removeAllChildren()
-        stars.removeAll()
+        root.addChild(oldRoot)
     }
    
     override func update(_ currentTime: TimeInterval) {
         /* Called before each frame is rendered */
+        if abs(root.position.x) > 0.01{
+            root.position.x = root.position.x / CGFloat(1.2)
+        } else {
+            root.position.x = 0
+        }
+        if abs(root.position.y) > 0.01{
+            root.position.y = root.position.y / CGFloat(1.2)
+        } else {
+            root.position.y = 0
+        }
         screenShake = max(screenShake - 0.5,0)
-        root.position = CGPoint(x:CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * CGFloat(screenShake/2)-CGFloat(screenShake),y:CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * CGFloat(screenShake/2)-CGFloat(screenShake))
+        stage.position = CGPoint(x:CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * CGFloat(screenShake/2)-CGFloat(screenShake),y:CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * CGFloat(screenShake/2)-CGFloat(screenShake))
         timePassed+=0.01
         for i in 0...(stars.count - 1){
             stars[i].position = CGPoint(x:stars[i].position.x+CGFloat(sin(timePassed + Double(i)) * 10)/CGFloat(i+100),y:stars[i].position.y+CGFloat(cos(timePassed + Double(i)) * 10)/CGFloat(i+100))

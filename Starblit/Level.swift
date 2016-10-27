@@ -32,8 +32,8 @@ class Level{
     var blocks:[[Int]] = []
     var width:Int = 0
     var height:Int = 0
-    var startPos:(x:Int,y:Int,z:Int) = (1,0,0)
-    var endPos:(x:Int,y:Int,z:Int) = (5,4,0)
+    var startPos:(x:Int,y:Int) = (1,0)
+    var endPos:(x:Int,y:Int) = (5,4)
     
     init(width:Int, height:Int) {
         blocks = [[Int]](repeating:[Int](repeating: 0, count: height), count: width)
@@ -45,13 +45,15 @@ class Level{
         blocks = [[Int]](repeating:[Int](repeating: 0, count: height), count: width)
     }
     
-    func buildLevel() -> Float{
+    func buildLevel(start:(x:Int,y:Int),end:(x:Int,y:Int)) -> Float{
         //these values are for testing right now and will be parameterized later
+        startPos = start
+        endPos = end
         //this is the most basic generation strategy
         let maxTries = 3000;
         var tries = maxTries;
         //make the end the end
-        blocks[endPos.x][endPos.y] ^= (1 << 1)
+        blocks[endPos.x][endPos.y] = 2
         var path = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
         while evalLevel(path: path) < 1000 {
             //print("did loop")
@@ -69,6 +71,8 @@ class Level{
             if evalLevel(path: path) > evalLevel(path: newpath){
                 blocks[coords.x][coords.y] ^= 1
             }
+            blocks[startPos.x][startPos.y] = 0
+            blocks[endPos.x][endPos.y] = 2
             path = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
         }
         
@@ -81,7 +85,7 @@ class Level{
     
     
     //heuristic for how interesting a level is
-    func evalLevel(path:(path:[(x:Int,y:Int,z:Int)], branchingFactor:Float)) -> Float{
+    func evalLevel(path:(path:[(x:Int,y:Int)], branchingFactor:Float)) -> Float{
         var manhattenDistance = 0;
         let stepsToSolve = path.path.count
         if stepsToSolve == 0{
@@ -99,7 +103,7 @@ class Level{
     }
     
     func postProcess(){
-        //clean up some of the unimportant blocks to obscure solution (but not too many so branch factor still stays high)
+        //clean up the unimportant blocks
         var numSteps = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y).path.count
         var xmaps:[Int] = [Int]()
         xmaps+=0...(width-1)
@@ -143,21 +147,21 @@ class Level{
         }
     }
     
-    func getNeighbors(x:Int,y:Int,invert:Int) -> [(x:Int,y:Int,z:Int)] {
+    func getNeighbors(x:Int,y:Int) -> [(x:Int,y:Int)] {
         //get neighboring blocks
-        var neighbors:[(x:Int,y:Int,z:Int)] = [(width,y,invert),(-1,y,invert),(x,-1,invert),(x,height,invert)]
+        var neighbors:[(x:Int,y:Int)] = [(width,y),(-1,y),(x,-1),(x,height)]
         //right
         var xx = x;
         var yy = y;
         while xx + 1 < width{
             //check if the block next to us is solid
-            if blocks[xx + 1][yy] & 1 == 1 - invert{
-                    neighbors[0] = (xx,yy,invert)
+            if blocks[xx + 1][yy] & 1 == 1{
+                neighbors[0] = (xx,yy)
                 break
             } else /*the block next to us is passable*/{
                 //if the block is the finish add it
                 if blocks[xx+1][yy] & 2 > 0{
-                    neighbors[0] = (xx+1, yy, invert)
+                    neighbors[0] = (xx+1, yy)
                     break
                 }
             }
@@ -168,13 +172,13 @@ class Level{
         yy = y
         while xx - 1 > -1{
             //check if the block next to us is solid
-            if blocks[xx - 1][yy] & 1 == 1 - invert{
-                    neighbors[1] = (xx,yy,invert)
+            if blocks[xx - 1][yy] & 1 == 1{
+                neighbors[1] = (xx,yy)
                 break
             } else /*the block next to us is passable*/{
                 //if the block is the finish add it
                 if blocks[xx-1][yy] & 2 > 0{
-                    neighbors[1] = (xx-1, yy, invert)
+                    neighbors[1] = (xx-1, yy)
                     break
                 }
             }
@@ -185,13 +189,13 @@ class Level{
         yy = y
         while yy - 1 > -1{
             //check if the block next to us is solid
-            if blocks[xx][yy - 1] & 1 == 1 - invert{
-                    neighbors[2] = (xx,yy,invert)
+            if blocks[xx][yy - 1] & 1 == 1{
+                    neighbors[2] = (xx,yy)
                 break
             } else /*the block next to us is passable*/{
                 //if the block is the finish add it
                 if blocks[xx][yy - 1] & 2 > 0{
-                    neighbors[2] = (xx, yy - 1, invert)
+                    neighbors[2] = (xx, yy - 1)
                     break
                 }
             }
@@ -202,14 +206,13 @@ class Level{
         yy = y
         while yy + 1 < height{
             //check if the block next to us is solid
-            if blocks[xx][yy + 1] & 1 == 1 - invert{
-                //in the special case where we are right next to it we can invert dimensions
-                    neighbors[3] = (xx,yy,invert)
+            if blocks[xx][yy + 1] & 1 == 1{
+                    neighbors[3] = (xx,yy)
                 break
             } else /*the block next to us is passable*/{
                 //if the block is the finish add it
                 if blocks[xx][yy + 1] & 2 > 0{
-                    neighbors[3] = (xx, yy + 1, invert)
+                    neighbors[3] = (xx, yy + 1)
                     break
                 }
             }
@@ -218,28 +221,32 @@ class Level{
         return neighbors
     }
     
-    func getPath(startX:Int,startY:Int,endX:Int,endY:Int) -> (path:[(x:Int,y:Int,z:Int)], branchingFactor:Float){
+    /*func getNeighbors(x:Int,y:Int) -> [(x:Int,y:Int)] {
+        radialSearch(i: <#T##Int#>, startx: <#T##Int#>, starty: <#T##Int#>)
+    }*/
+    
+    func getPath(startX:Int,startY:Int,endX:Int,endY:Int) -> (path:[(x:Int,y:Int)], branchingFactor:Float){
         //use a breadth first search
         //our state is an 3 tuple
-        var states:[[[Int]]] = [[[Int]]](repeating:[[Int]](repeating:[Int](repeating: -1, count: height), count: width), count:2)
-        var queue:[(x:Int,y:Int,z:Int,step:Int)] = []
-        queue.append((startX,startY,0,0))
+        var states:[[Int]] = [[Int]](repeating:[Int](repeating: -1, count: height), count: width)
+        var queue:[(x:Int,y:Int,step:Int)] = []
+        queue.append((startX,startY,0))
         var pathLength = -1
-        var finishState:(x:Int,y:Int,z:Int) = (0,0,0)
+        var finishState:(x:Int,y:Int) = (0,0)
         while queue.count > 0{
             let state = queue.remove(at: 0)
             //print(state)
             if state.0 == endX && state.1 == endY{
-                finishState = (state.x,state.y,state.z)
-                pathLength = state.3
+                finishState = (state.x,state.y)
+                pathLength = state.2
                 break;
             }
-            if states[state.2][state.0][state.1] > -1{
+            if states[state.0][state.1] > -1{
                 continue
             } else {
-                states[state.2][state.0][state.1] = state.3
+                states[state.0][state.1] = state.2
                 //check for neighboring blocks
-                let neighbors = getNeighbors(x: state.0, y: state.1, invert: state.z).filter({$0.x < width && $0.x > -1 && $0.y > -1 && $0.y < height && states[$0.z][$0.x][$0.y] < 0}).map({($0.x,$0.y,$0.z,state.3+1)})
+                let neighbors = getNeighbors(x: state.0, y: state.1).filter({$0.x < width && $0.x > -1 && $0.y > -1 && $0.y < height && states[$0.x][$0.y] < 0}).map({($0.x,$0.y,state.2+1)})
                 for neighbor in neighbors{
                     queue.append(neighbor)
                 }
@@ -249,24 +256,24 @@ class Level{
         var branchingFactor:Float = 0
         for i in 0..<width{
             for j in 0..<height{
-                branchingFactor += Float(states[0][i][j]) + 1
+                branchingFactor += Float(states[i][j]) + 1
             }
         }
         branchingFactor /= Float(pathLength)
         
         //reconstruct the solution
-        var path:[(x:Int,y:Int,z:Int)] = []
+        var path:[(x:Int,y:Int)] = []
         var step = pathLength
         var currentState = finishState
         while step > 0{
             path.append(currentState)
             var i = 0
             var coords = radialSearch(i: i, startx: currentState.x, starty: currentState.y)
-            while states[currentState.z][coords.x][coords.y] != step - 1{
+            while states[coords.x][coords.y] != step - 1{
                 i += 1
                 coords = radialSearch(i: i, startx: currentState.x, starty: currentState.y)
             }
-            currentState = (coords.x,coords.y,currentState.z)
+            currentState = (coords.x,coords.y)
             step -= 1;
         }
         return (path,branchingFactor)
