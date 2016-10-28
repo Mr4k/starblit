@@ -46,7 +46,8 @@ class GameScene: SKScene {
     var spinners:[SKSpriteNode] = []
     var spinnersBackgroundBlocks:[SKSpriteNode] = []
     
-    let level = Level(width: 12,height: 18)
+    var level = Level(width: 12,height: 18)
+    var nextLevel = Level(width: 12,height: 18)
     var stars:[SKSpriteNode] = []
     var timePassed:Double = 0
     var root:SKNode = SKNode()
@@ -185,8 +186,12 @@ class GameScene: SKScene {
             clearBlocks()
             root.position.x = rootTranslations[exitDirection].x
             root.position.y = rootTranslations[exitDirection].y
-            level.buildLevel(start:selectFromRectOutline(width: width - 1, height: height - 1, side:exitDirection),
-                             end:selectFromRectOutline(width: width - 1, height: height - 1, side:(exitDirection + 2) % 2))
+            /*level.buildLevelStep(start:selectFromRectOutline(width: width - 1, height: height - 1, side:exitDirection),
+                             end:selectFromRectOutline(width: width - 1, height: height - 1, side:(exitDirection + 2) % 2))*/
+            level = nextLevel
+            level.postProcess()
+            nextLevel = Level(width: 12,height: 18, start:selectFromRectOutline(width: width - 1, height: height - 1, side:exitDirection),
+                              end:selectFromRectOutline(width: width - 1, height: height - 1, side:(exitDirection + 2) % 2))
             initLevel()
             playerPos = level.startPos
             player.position = scaleToScreen(x: level.startPos.x, y: level.startPos.y)
@@ -264,11 +269,16 @@ class GameScene: SKScene {
         } else {
             root.position.y = 0
         }
+        
         screenShake = max(screenShake - 0.5,0)
         stage.position = CGPoint(x:CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * CGFloat(screenShake/2)-CGFloat(screenShake),y:CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * CGFloat(screenShake/2)-CGFloat(screenShake))
+        
         timePassed+=0.01
+        
         for i in 0...(stars.count - 1){
             stars[i].position = CGPoint(x:stars[i].position.x+CGFloat(sin(timePassed + Double(i)) * 10)/CGFloat(i+100),y:stars[i].position.y+CGFloat(cos(timePassed + Double(i)) * 10)/CGFloat(i+100))
         }
+        
+        nextLevel.buildLevelStep()
     }
 }

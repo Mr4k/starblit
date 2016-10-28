@@ -41,12 +41,19 @@ class Level{
         self.height = height
     }
     
+    init(width:Int, height:Int, start:(x:Int,y:Int), end:(x:Int,y:Int)) {
+        blocks = [[Int]](repeating:[Int](repeating: 0, count: height), count: width)
+        self.width = width
+        self.height = height
+        self.startPos = start
+        self.endPos = end
+    }
+    
     func clear(){
         blocks = [[Int]](repeating:[Int](repeating: 0, count: height), count: width)
     }
     
     func buildLevel(start:(x:Int,y:Int),end:(x:Int,y:Int)) -> Float{
-        //these values are for testing right now and will be parameterized later
         startPos = start
         endPos = end
         //this is the most basic generation strategy
@@ -83,6 +90,28 @@ class Level{
         return evalLevel(path: getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y))
     }
     
+    func buildLevelStep() -> Float{
+        //this is the a basic generation strategy
+        //make the end the end
+        blocks[endPos.x][endPos.y] = 2
+        let path = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
+        let coords:(x:Int,y:Int) = (Int(arc4random_uniform(UInt32(width))),
+                                    Int(arc4random_uniform(UInt32(height))))
+        //flip the color of the block at coords
+        blocks[coords.x][coords.y] ^= 1
+        blocks[startPos.x][startPos.y] = 0
+        blocks[endPos.x][endPos.y] = 2
+        let newpath = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
+        if evalLevel(path: path) > evalLevel(path: newpath){
+            blocks[coords.x][coords.y] ^= 1
+        }
+        blocks[startPos.x][startPos.y] = 0
+        blocks[endPos.x][endPos.y] = 2
+        
+        
+        //this might be a little ugly
+        return evalLevel(path: getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y))
+    }
     
     //heuristic for how interesting a level is
     func evalLevel(path:(path:[(x:Int,y:Int)], branchingFactor:Float)) -> Float{
