@@ -61,26 +61,12 @@ class Level{
         var tries = maxTries;
         //make the end the end
         blocks[endPos.x][endPos.y] = 2
-        var path = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
-        while evalLevel(path: path) < 1000 {
-            //print("did loop")
-            let coords:(x:Int,y:Int) = (Int(arc4random_uniform(UInt32(width))),
-                                        Int(arc4random_uniform(UInt32(height))))
+        //var path = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
+        while buildLevelStep() < 100000 {
             tries = tries - 1;
             if tries < 0{
                 break;
             }
-            //flip the color of the block at coords
-            blocks[coords.x][coords.y] ^= 1
-            blocks[startPos.x][startPos.y] = 0
-            blocks[endPos.x][endPos.y] = 2
-            let newpath = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
-            if evalLevel(path: path) > evalLevel(path: newpath){
-                blocks[coords.x][coords.y] ^= 1
-            }
-            blocks[startPos.x][startPos.y] = 0
-            blocks[endPos.x][endPos.y] = 2
-            path = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
         }
         
         
@@ -93,6 +79,7 @@ class Level{
     func buildLevelStep() -> Float{
         //this is the a basic generation strategy
         //make the end the end
+        let equalEvalThres = Float(0.5)
         blocks[endPos.x][endPos.y] = 2
         let path = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
         let coords:(x:Int,y:Int) = (Int(arc4random_uniform(UInt32(width))),
@@ -102,7 +89,11 @@ class Level{
         blocks[startPos.x][startPos.y] = 0
         blocks[endPos.x][endPos.y] = 2
         let newpath = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y)
-        if evalLevel(path: path) > evalLevel(path: newpath){
+        let oldeval = evalLevel(path: path)
+        let neweval = evalLevel(path: newpath)
+        if oldeval > neweval{
+            blocks[coords.x][coords.y] ^= 1
+        } else if abs(oldeval - neweval) < equalEvalThres && arc4random_uniform(10) > 5 {
             blocks[coords.x][coords.y] ^= 1
         }
         blocks[startPos.x][startPos.y] = 0
@@ -111,6 +102,10 @@ class Level{
         
         //this might be a little ugly
         return evalLevel(path: getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y))
+    }
+    
+    func postProcessStep(){
+        
     }
     
     //heuristic for how interesting a level is
@@ -133,6 +128,7 @@ class Level{
     
     func postProcess(){
         //clean up the unimportant blocks
+        let postProcessThreshold = Float(0.8)
         var numSteps = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y).path.count
         var xmaps:[Int] = [Int]()
         xmaps+=0...(width-1)
@@ -145,13 +141,17 @@ class Level{
             for j in 0..<height{
                 let oldval = blocks[xmaps[i]][ymaps[j]]
                 blocks[xmaps[i]][ymaps[j]] = 0
-                if getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y).path.count < numSteps || arc4random_uniform(10) > 11{
+                let newVal = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y).path.count
+                if newVal < numSteps{
                     blocks[xmaps[i]][ymaps[j]] = oldval
+                } else {
+                    numSteps = newVal
                 }
             }
         }
-        numSteps = getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y).path.count
+        let score = evalLevel(path: getPath(startX: startPos.x, startY: startPos.y, endX: endPos.x, endY: endPos.y))
         print("finished post process with \(numSteps) steps")
+        print("finished post process with score: \(score)")
     }
     
     func adjacentBlocks(x:Int,y:Int) -> [Int]{

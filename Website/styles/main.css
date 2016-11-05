@@ -1,0 +1,30 @@
+body {
+    background: #222222;
+}
+
+h1 {
+   color: transparent;  
+   font-family: 'Bungee', cursive;
+   text-align: center;
+   font-size: 140px;
+   background: url(images/background-text.png);
+   background-size: 32px 32px;
+   -webkit-background-clip: text;
+   margin-bottom: 0px
+}
+
+h2 {
+	color: white;  
+	text-align: center;
+	font-family: 'Bungee Hairline', cursive;
+	font-size: 32px;
+	margin-top: 0px
+}
+
+h3 {
+	color: white;  
+	text-align: center;
+	font-family: 'Bungee Hairline', cursive;
+	font-size: 20px;
+	margin-top: 0px
+}
