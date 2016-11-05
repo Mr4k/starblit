@@ -1,3 +1,3 @@
 # starblit
 An infinite puzzle game  
-[peterstefek.me/starblit](https://peterstefek.me/starblit)
+[peterstefek.me/starblit](http://peterstefek.me/starblit)
