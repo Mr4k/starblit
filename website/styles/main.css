@@ -6,7 +6,7 @@ h1 {
    color: transparent;  
    font-family: 'Bungee', cursive;
    text-align: center;
-   font-size: 9em;
+   font-size: 900%;
    background: url(images/background-text.png);
    background-size: 0.3em 0.3em;
    -webkit-background-clip: text;
@@ -17,7 +17,7 @@ h2 {
 	color: white;  
 	text-align: center;
 	font-family: 'Bungee Hairline', cursive;
-	font-size: 2em;
+	font-size: 200%;
 	margin-top: 0px
 }
 
@@ -25,6 +25,6 @@ h3 {
 	color: white;  
 	text-align: center;
 	font-family: 'Bungee Hairline', cursive;
-	font-size: 1.3em;
+	font-size: 130%;
 	margin-top: 0px
 }
