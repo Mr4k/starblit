@@ -29,6 +29,11 @@ h3 {
 	margin-top: 0px
 }
 
+.screenshot{
+	width:300px;
+	height:610px;
+}
+
 @media (max-width: 768px) {
     h1{
     	background-size: 0.4em 0.4em;
@@ -38,4 +43,8 @@ h3 {
     	font-size: 1.5em;
     	font-family: 'Titillium Web', sans-serif;
     }
+    .screenshot {
+		width:80%;
+		height:auto;
+	}
 }
