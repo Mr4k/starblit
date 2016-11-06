@@ -32,7 +32,7 @@ h3 {
 @media (max-width: 800px) {
     h1{
     	background-size: 0.4em 0.4em;
-    	font-size: 4em;
+    	font-size: 6em;
     }
     h2{font-size: 1.5em;}
 }
