@@ -24,7 +24,7 @@ extension Array
 *This class is responsible for holding and generating levels
 **/
 
-class Level{
+class Level {
     //change to data structure
     //a block is a number
     //the first bit represents background color
@@ -56,6 +56,10 @@ class Level{
     func buildLevel(start:(x:Int,y:Int),end:(x:Int,y:Int)) -> Float{
         startPos = start
         endPos = end
+        return buildLevel()
+    }
+    
+    func buildLevel() -> Float{
         //this is the most basic generation strategy
         let maxTries = 3000;
         var tries = maxTries;

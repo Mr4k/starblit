@@ -17,6 +17,10 @@
 		BDAB8EF51DA931B100B8FF16 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BDAB8EF31DA931B100B8FF16 /* LaunchScreen.storyboard */; };
 		BDAB8F001DA931B100B8FF16 /* StarblitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDAB8EFF1DA931B100B8FF16 /* StarblitTests.swift */; };
 		BDAB8F0B1DA931B200B8FF16 /* StarblitUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDAB8F0A1DA931B200B8FF16 /* StarblitUITests.swift */; };
+		BDD7070D1DD0A263009330F7 /* Dust.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD7070C1DD0A263009330F7 /* Dust.swift */; };
+		BDD707101DD0A7E4009330F7 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD7070F1DD0A7E4009330F7 /* Colors.swift */; };
+		BDD707121DD0B3F6009330F7 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD707111DD0B3F6009330F7 /* Helpers.swift */; };
+		BDD707141DD0B655009330F7 /* CGVectorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDD707131DD0B655009330F7 /* CGVectorExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +57,10 @@
 		BDAB8F061DA931B200B8FF16 /* StarblitUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = StarblitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BDAB8F0A1DA931B200B8FF16 /* StarblitUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StarblitUITests.swift; sourceTree = "<group>"; };
 		BDAB8F0C1DA931B200B8FF16 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BDD7070C1DD0A263009330F7 /* Dust.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dust.swift; sourceTree = "<group>"; };
+		BDD7070F1DD0A7E4009330F7 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		BDD707111DD0B3F6009330F7 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
+		BDD707131DD0B655009330F7 /* CGVectorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGVectorExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,6 +111,8 @@
 		BDAB8EE51DA931B100B8FF16 /* Starblit */ = {
 			isa = PBXGroup;
 			children = (
+				BDD7070E1DD0A7CC009330F7 /* helpers */,
+				BDD7070B1DD0A1F3009330F7 /* aesthetics */,
 				BDAB8EE61DA931B100B8FF16 /* AppDelegate.swift */,
 				BDAB8EE81DA931B100B8FF16 /* GameScene.sks */,
 				BDAB8EEA1DA931B100B8FF16 /* GameScene.swift */,
@@ -132,6 +142,24 @@
 				BDAB8F0C1DA931B200B8FF16 /* Info.plist */,
 			);
 			path = StarblitUITests;
+			sourceTree = "<group>";
+		};
+		BDD7070B1DD0A1F3009330F7 /* aesthetics */ = {
+			isa = PBXGroup;
+			children = (
+				BDD7070C1DD0A263009330F7 /* Dust.swift */,
+			);
+			name = aesthetics;
+			sourceTree = "<group>";
+		};
+		BDD7070E1DD0A7CC009330F7 /* helpers */ = {
+			isa = PBXGroup;
+			children = (
+				BDD7070F1DD0A7E4009330F7 /* Colors.swift */,
+				BDD707111DD0B3F6009330F7 /* Helpers.swift */,
+				BDD707131DD0B655009330F7 /* CGVectorExtension.swift */,
+			);
+			name = helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -273,9 +301,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				BDAB8EEB1DA931B100B8FF16 /* GameScene.swift in Sources */,
+				BDD707121DD0B3F6009330F7 /* Helpers.swift in Sources */,
+				BDD707101DD0A7E4009330F7 /* Colors.swift in Sources */,
 				BDAB8EED1DA931B100B8FF16 /* GameViewController.swift in Sources */,
+				BDD707141DD0B655009330F7 /* CGVectorExtension.swift in Sources */,
 				BD87CFC91DAA631600939B1E /* Level.swift in Sources */,
 				BDAB8EE71DA931B100B8FF16 /* AppDelegate.swift in Sources */,
+				BDD7070D1DD0A263009330F7 /* Dust.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -8,26 +8,6 @@
 
 import SpriteKit
 
-extension String {
-    var hexColor: UIColor {
-        let hex = trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int = UInt32()
-        Scanner(string: hex).scanHexInt32(&int)
-        let a, r, g, b: UInt32
-        switch hex.characters.count {
-        case 3: // RGB (12-bit)
-            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
-            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8: // ARGB (32-bit)
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            return .clear
-        }
-        return UIColor(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: CGFloat(a) / 255)
-    }
-}
-
 class GameScene: SKScene {
     
     let width = 12
@@ -47,8 +27,14 @@ class GameScene: SKScene {
     var spinnersBackgroundBlocks:[SKSpriteNode] = []
     
     var level = Level(width: 12,height: 18)
+    
     var nextLevel = Level(width: 12,height: 18)
+    var nextLevelReady:Bool = false
+    var levelFinished:Bool = false
+    
     var stars:[SKSpriteNode] = []
+    var particles:[Dust] = []
+    
     var timePassed:Double = 0
     var root:SKNode = SKNode()
     var oldRoot = SKNode()
@@ -104,7 +90,7 @@ class GameScene: SKScene {
     
     func initLevel(){
         //backgroundColor = "#484D6D".hexColor
-        backgroundColor = "#222222".hexColor
+        backgroundColor = .space
         layoutLevel()
         addPlayer(x: level.startPos.x, y: level.startPos.y)
         playerPos = (level.startPos.x, y: level.startPos.y)
@@ -125,16 +111,12 @@ class GameScene: SKScene {
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             switch swipeGesture.direction {
             case UISwipeGestureRecognizerDirection.right:
-                print("Swiped right")
                 movePlayer(direction: 0)
             case UISwipeGestureRecognizerDirection.down:
-                print("Swiped down")
                 movePlayer(direction: 2)
             case UISwipeGestureRecognizerDirection.left:
-                print("Swiped left")
                 movePlayer(direction: 1)
             case UISwipeGestureRecognizerDirection.up:
-                print("Swiped up")
                 movePlayer(direction: 3)
             default:
                 break
@@ -169,7 +151,7 @@ class GameScene: SKScene {
         let dist = max(abs(cgPoint.x-player.position.x),abs(cgPoint.y - player.position.y))
         let action = SKAction.move(to: cgPoint, duration: (0.0012 * Double(dist)))
         action.timingMode = .easeIn
-        player.run(action, completion: {self.playerFinishedMoving(dist:Double(dist))})
+        player.run(action, completion: {self.playerFinishedMoving(dist:Double(dist),side:direction)})
     }
     
     func popLevel(){
@@ -181,27 +163,55 @@ class GameScene: SKScene {
         
         nextLevel = Level(width: 12,height: 18, start:playStartPos[exitDirection],
                           end:selectFromRectOutline(width: width - 2, height: height - 2, side:(exitDirection + 2) % 2))
+        //start building the next level in a background thread
+        self.nextLevelReady = false
+        DispatchQueue.global(qos: .background).async{
+            self.nextLevel.buildLevel()
+            DispatchQueue.main.async {
+                self.nextLevelReady = true
+            }
+        }
+        //end threading
         initLevel()
     }
     
-    func playerFinishedMoving(dist:Double){
+    func playerFinishedMoving(dist:Double,side:Int){
         playerCanMove = true
         if playerPos.x < 0 || playerPos.x>=width || playerPos.y < 0 || playerPos.y >= height{
             playerPos = level.startPos
             player.position = scaleToScreen(x: level.startPos.x, y: level.startPos.y)
         } else if playerPos == level.endPos{
-            let rootTranslations:[CGPoint] = [CGPoint(x:size.width,y:0), CGPoint(x:0,y:size.height),CGPoint(x:-size.width,y:0),CGPoint(x:0,y:-size.height)]
-            root.position.x = -rootTranslations[exitDirection].x
-            root.position.y = -rootTranslations[exitDirection].y
-            level.clear()
-            clearBlocks()
-            root.position.x = rootTranslations[exitDirection].x
-            root.position.y = rootTranslations[exitDirection].y
-            popLevel()
-            playerPos = level.startPos
-            player.position = scaleToScreen(x: level.startPos.x, y: level.startPos.y)
+           levelFinished = true
+            playerCanMove = false
+        } else {
+            //everything is normal
+            
+            //burst some dust particles
+            for i in 0...15{
+                let blockSize = min(Double(screenWidth) / Double(width), Double(screenHeight) / Double(height))
+                let dust:Dust = Dust()
+                let pos = selectCGPointFromRectOutline(origin: CGPoint(x:player.position.x-CGFloat(blockSize/2),y:player.position.y-CGFloat(blockSize/2)), width: blockSize, height: blockSize, side: side)
+                dust.setup(position: pos, direction: randomCGVector())
+                particles.append(dust)
+                addChild(dust)
+            }
         }
         screenShake=min(dist/40.0,7)
+    }
+    
+    func advanceToNextLevel(){
+        let rootTranslations:[CGPoint] = [CGPoint(x:size.width,y:0), CGPoint(x:0,y:size.height),CGPoint(x:-size.width,y:0),CGPoint(x:0,y:-size.height)]
+        root.position.x = -rootTranslations[exitDirection].x
+        root.position.y = -rootTranslations[exitDirection].y
+        level.clear()
+        clearBlocks()
+        root.position.x = rootTranslations[exitDirection].x
+        root.position.y = rootTranslations[exitDirection].y
+        popLevel()
+        playerPos = level.startPos
+        player.position = scaleToScreen(x: level.startPos.x, y: level.startPos.y)
+        levelFinished = false
+        playerCanMove = true
     }
     
     func addGoal(x:Int,y:Int){
@@ -228,7 +238,7 @@ class GameScene: SKScene {
         let neighbors = level.adjacentBlocks(x: x, y: y)
         sprite.zPosition = -2
         root.addChild(sprite)
-        /*for i in 0...3{
+        for i in 0...3{
             if neighbors[i] > 0 {continue}
             let outline = SKSpriteNode(texture:SKTexture(imageNamed: "Outline"))
             let blockSize = min(screenWidth / CGFloat(width), screenHeight / CGFloat(height))
@@ -237,8 +247,10 @@ class GameScene: SKScene {
             outline.position = scaleToScreen(x: x, y: y)
             outline.zRotation = CGFloat.pi * CGFloat(0.5 * Double(i)) + CGFloat.pi/CGFloat(2)
             outline.zPosition = 1
+            outline.color = .almostGrey
+            outline.colorBlendFactor = 1
             root.addChild(outline)
-        }*/
+        }
     }
     
     func addStars(){
@@ -264,6 +276,10 @@ class GameScene: SKScene {
    
     override func update(_ currentTime: TimeInterval) {
         /* Called before each frame is rendered */
+        if levelFinished && nextLevelReady{
+            advanceToNextLevel()
+        }
+        
         if abs(root.position.x) > 0.01{
             root.position.x -= min(abs(root.position.x * CGFloat(0.9)),10) * (root.position.x < 0 ? -1 : 1)
         } else {
@@ -275,18 +291,19 @@ class GameScene: SKScene {
             root.position.y = 0
         }
         
+        var particleNodesToRemove:[Dust] = []
+        for i in 0..<particles.count{
+            particles[i].update(deltaTime: 0)
+            if particles[i].kill {
+                particleNodesToRemove.append(particles[i])
+            }
+        }
+        self.removeChildren(in: particleNodesToRemove)
+        particles = particles.filter({$0.kill == false})
+        
         /*screenShake = max(screenShake - 0.5,0)
         stage.position = CGPoint(x:CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * CGFloat(screenShake/2)-CGFloat(screenShake),y:CGFloat(Float(arc4random()) / Float(UINT32_MAX)) * CGFloat(screenShake/2)-CGFloat(screenShake))*/
         
         timePassed+=0.01
-        
-        /*for i in 0...(stars.count - 1){
-            stars[i].position = CGPoint(x:stars[i].position.x+CGFloat(sin(timePassed + Double(i)) * 10)/CGFloat(i+100),y:stars[i].position.y+CGFloat(cos(timePassed + Double(i)) * 10)/CGFloat(i+100))
-        }*/
-        
-        //for _ in 1 {
-            nextLevel.buildLevelStep()
-        //}
-        //print(nextLevel.buildLevelStep())
     }
 }
