@@ -23,11 +23,11 @@ func randomCGVector() -> CGVector{
 
 func selectCGPointFromRectOutline(origin:CGPoint,width:Double,height:Double, side:Int) -> CGPoint{
     switch side % 4{
-    case 2:
-        return CGPoint(x:origin.x+CGFloat(width), y:origin.y+randomCGFloat(min: 0, max: height))
     case 0:
-        return CGPoint(x:origin.x, y:origin.y+randomCGFloat(min: 0, max: height))
+        return CGPoint(x:origin.x+CGFloat(width), y:origin.y+randomCGFloat(min: 0, max: height))
     case 1:
+        return CGPoint(x:origin.x, y:origin.y+randomCGFloat(min: 0, max: height))
+    case 2:
         return CGPoint(x:origin.x + randomCGFloat(min: 0, max: width), y:origin.y)
     case 3:
         return CGPoint(x:origin.x + randomCGFloat(min: 0, max: width), y:origin.y+CGFloat(height))
